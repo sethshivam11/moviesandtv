@@ -22,6 +22,10 @@ const Page = (props) => {
   const updatePage = async () => {
     props.setProgress(30);
     try {
+      let apiKey = "";
+      await fetch("/apikey").then(parsed => parsed.json()).then(data => {
+        apiKey = data.apiKey;
+      });
       let apiUrl = await props.url;
       props.setProgress(50);
       let data = await fetch(apiUrl);
