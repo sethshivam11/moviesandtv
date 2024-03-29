@@ -21,32 +21,55 @@ const Page = (props) => {
   }, []);
   const updatePage = async () => {
     props.setProgress(30);
-    try {
-      let apiKey = "";
-      await fetch("/apikey").then(parsed => parsed.json()).then(data => {
-        apiKey = data.apiKey;
+    let apiUrl = await props.url;
+    props.setProgress(50);
+    await fetch(`/fetch?url=${apiUrl}`)
+      .then((parsed) => parsed.json())
+      .then((parsedData) => {
+        props.setProgress(70);
+        if (parsedData.total_results > 0) {
+          setResults(parsedData.results);
+          setTotalPages(parsedData.total_results);
+          props.setProgress(90);
+        } else {
+          setResults([
+            {
+              genre_ids: 404,
+              overview: "",
+              mode: "",
+              release_date: "",
+              first_air_date: "",
+              poster_path: "Not found",
+              backdrop_path: "",
+              vote_average: 0,
+              title: "Not Found",
+              popularity: 0,
+            },
+          ]);
+          console.log("Something went wrong (API)", parsedData);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setResults([
+          {
+            genre_ids: [404],
+            overview: "Something went wrong, while connecting to the API.",
+            mode: "",
+            release_date: "",
+            first_air_date: "Today",
+            poster_path: "Not found",
+            backdrop_path: "",
+            vote_average: 0,
+            title: "Not Found",
+            popularity: 0,
+          },
+        ]);
+      })
+      .finally(() => {
+        props.setProgress(100);
+        setLoading(false);
       });
-      let apiUrl = await props.url;
-      props.setProgress(50);
-      let data = await fetch(apiUrl);
-      props.setProgress(80);
-      let parsedData = await data.json();
-      if (parsedData.total_results >= 0) {
-        setResults(parsedData.results);
-        setTotalPages(parsedData.total_results);
-        props.setProgress(90);
-        setLoading(false);
-        props.setProgress(100);
-      } else {
-        console.log("Something went wrong (API)");
-        props.setProgress(100);
-        setLoading(false);
-      }
-    } catch (err) {
-      props.setProgress(100);
-      setLoading(false);
-      console.log(err);
-    }
   };
   const fetchMoreData = async (page) => {
     try {
@@ -54,7 +77,7 @@ const Page = (props) => {
       const nextUrl = (await props.url) + "&page=" + page;
       console.log(nextUrl);
       props.setProgress(50);
-      const json = await fetch(nextUrl);
+      const json = await fetch(`/fetch?url=${nextUrl}`);
       props.setProgress(70);
       const updatedData = await json.json();
       if (updatedData.total_results >= 0) {
@@ -89,26 +112,27 @@ const Page = (props) => {
     window.location.assign("#main");
   };
   const genreList = {
-        28: "Action",
-        12: "Adventure",
-        16: "Animation",
-        35: "Comedy",
-        80: "Thriller",
-        99: "Documentary",
-        18: "Drama",
-        10751: "Family",
-        14: "Fantasy",
-        36: "History",
-        27: "Horror",
-        10402: "Music",
-        9648: "Mystery",
-        10749: "Romance",
-        878: "Science Fiction",
-        10770: "TV-Film",
-        53: "Thriller",
-        10752: "War",
-        37: "Western",
-      }
+    28: "Action",
+    12: "Adventure",
+    16: "Animation",
+    404: "Not Found",
+    35: "Comedy",
+    80: "Thriller",
+    99: "Documentary",
+    18: "Drama",
+    10751: "Family",
+    14: "Fantasy",
+    36: "History",
+    27: "Horror",
+    10402: "Music",
+    9648: "Mystery",
+    10749: "Romance",
+    878: "Science Fiction",
+    10770: "TV-Film",
+    53: "Thriller",
+    10752: "War",
+    37: "Western",
+  };
   const getGenre = (code) => {
     return genreList.get(code, "Unknown");
   };
@@ -117,10 +141,10 @@ const Page = (props) => {
   };
 
   const fetchGenre = (data) => {
-    try{
-    const genres = data.map(getGenre);
-    return genres.join(", ");
-    }catch(err){
+    try {
+      const genres = data.map(getGenre);
+      return genres.join(", ");
+    } catch (err) {
       console.log(err);
     }
   };
@@ -146,33 +170,34 @@ const Page = (props) => {
         >
           {loading && <Spinner />}
           <div className="row container" style={{ padding: "0" }}>
-            {results && results.map((e) => {
-              return (
-                e && (
-                  <div
-                    className="col-md-3"
-                    data-bs-theme={props.mode}
-                    key={e.id}
-                  >
-                    <Card
-                      genre={fetchGenre(e.genre_ids)}
-                      name={e.name}
-                      overview={e.overview}
-                      mode={e.mode}
-                      release={e.release_date}
-                      first_air_date={e.first_air_date}
-                      img={e.poster_path}
-                      link={e.backdrop_path}
-                      ratings={
-                        e.vote_average ? e.vote_average.toFixed(1) + "⭐" : ""
-                      }
-                      title={e.title}
-                      popularity={e.popularity}
-                    />
-                  </div>
-                )
-              );
-            })}
+            {results &&
+              results.map((e) => {
+                return (
+                  e && (
+                    <div
+                      className="col-md-3"
+                      data-bs-theme={props.mode}
+                      key={e.id}
+                    >
+                      <Card
+                        genre={fetchGenre(e.genre_ids)}
+                        name={e.name}
+                        overview={e.overview}
+                        mode={e.mode}
+                        release={e.release_date}
+                        first_air_date={e.first_air_date}
+                        img={e.poster_path}
+                        link={e.backdrop_path}
+                        ratings={
+                          e.vote_average ? e.vote_average.toFixed(1) + "⭐" : ""
+                        }
+                        title={e.title}
+                        popularity={e.popularity}
+                      />
+                    </div>
+                  )
+                );
+              })}
           </div>
         </div>
         <div className="block">
@@ -197,5 +222,5 @@ const Page = (props) => {
       {results && <Footer />}
     </div>
   );
-          }
+};
 export default Page;

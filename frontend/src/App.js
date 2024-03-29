@@ -7,20 +7,8 @@ import Page from "./components/Page";
 
 const App = () => {
   const navigate = useNavigate();
-  const apiKey = process.env.REACT_APP_API_KEY;
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState("light");
-  // const toggleMode = () => {
-  //   if (mode === "light") {
-  //     setMode("dark");
-  //     document.body.style.backgroundColor = "#212529";
-  //     document.body.style.color = "white";
-  //   } else {
-  //     setMode("light");
-  //     document.body.style.backgroundColor = "white";
-  //     document.body.style.color = "black";
-  //   }
-  // };
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const prefersLight = window.matchMedia(
     "(prefers-color-scheme: light)"
@@ -73,17 +61,17 @@ const App = () => {
     e.target.search.value = "";
   };
   let country = "IN";
-  const trendingM = `https://api.themoviedb.org/3/trending/movie/day?${day}&language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const topratedM = `https://api.themoviedb.org/3/movie/top_rated?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const popularM = `https://api.themoviedb.org/3/movie/popular?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const upcomingM = `https://api.themoviedb.org/3/movie/upcoming?language=en-${country}&sort_by=popularity.desc&with_release_type=2|3&release_date.gte=${date}&release_date.lte=${upcoming}&include_adult=false&api_key=${apiKey}`;
-  const nowplayingM = `https://api.themoviedb.org/3/movie/now_playing?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const trendingT = `https://api.themoviedb.org/3/trending/tv/day?${day}&language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const topratedT = `https://api.themoviedb.org/3/tv/top_rated?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const popularT = `https://api.themoviedb.org/3/tv/popular?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const upcomingT = `https://api.themoviedb.org/3/tv/on_the_air?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const nowplayingT = `https://api.themoviedb.org/3/tv/airing_today?language=en-${country}&include_adult=false&api_key=${apiKey}`;
-  const search = `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-${country}&api_key=${apiKey}`;
+  const trendingM = `https://api.themoviedb.org/3/trending/movie/day?${day}&language=en-${country}&include_adult=false&api_key=`;
+  const topratedM = `https://api.themoviedb.org/3/movie/top_rated?language=en-${country}&include_adult=false&api_key=`;
+  const popularM = `https://api.themoviedb.org/3/movie/popular?language=en-${country}&include_adult=false&api_key=`;
+  const upcomingM = `https://api.themoviedb.org/3/movie/upcoming?language=en-${country}&sort_by=popularity.desc&with_release_type=2|3&release_date.gte=${date}&release_date.lte=${upcoming}&include_adult=false&api_key=`;
+  const nowplayingM = `https://api.themoviedb.org/3/movie/now_playing?language=en-${country}&include_adult=false&api_key=`;
+  const trendingT = `https://api.themoviedb.org/3/trending/tv/day?${day}&language=en-${country}&include_adult=false&api_key=`;
+  const topratedT = `https://api.themoviedb.org/3/tv/top_rated?language=en-${country}&include_adult=false&api_key=`;
+  const popularT = `https://api.themoviedb.org/3/tv/popular?language=en-${country}&include_adult=false&api_key=`;
+  const upcomingT = `https://api.themoviedb.org/3/tv/on_the_air?language=en-${country}&include_adult=false&api_key=`;
+  const nowplayingT = `https://api.themoviedb.org/3/tv/airing_today?language=en-${country}&include_adult=false&api_key=`;
+  const search = `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-${country}&api_key=`;
   return (
       <div>
         <LoadingBar color="#0dcaf0" progress={progress} />
