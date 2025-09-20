@@ -6,7 +6,7 @@ const Navbar = (props) => {
   return (
     <div>
       <nav
-        className="navbar navbar-expand-lg bg-body-tertiary py-0 position-fixed"
+        className="navbar navbar-expand-xl bg-body-tertiary py-0 position-fixed"
         data-bs-theme={props.mode}
         style={{ width: "100%", top: "0", zIndex: "2" }}
       >

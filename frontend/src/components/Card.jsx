@@ -28,8 +28,8 @@ const Card = (props) => {
             {props.name ? props.name : props.title}
           </h4>
           <p className="mb-1">
-            <strong>{props.genre?"Genre: ":""} </strong>
-            {props.genre?props.genre:""}
+            <strong>{props.genre ? "Genre: " : ""} </strong>
+            {props.genre ? props.genre : ""}
           </p>
           <p className="card-text">
             <strong>Overview: </strong>
@@ -45,7 +45,7 @@ const Card = (props) => {
             <strong className="mb-3">
               {`${props.release ? "Release Date: " : "First Aired: "}`}
             </strong>
-            {props.release? props.release: props.first_air_date}
+            {props.release ? props.release : props.first_air_date}
           </p>
         </div>
       </div>

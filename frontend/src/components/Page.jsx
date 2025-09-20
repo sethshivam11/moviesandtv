@@ -21,9 +21,15 @@ const Page = (props) => {
   }, []);
   const updatePage = async () => {
     props.setProgress(30);
-    let apiUrl = await props.url;
+    let apiUrl = props.url + "&api_key=";
     props.setProgress(50);
-    await fetch(`/fetch?url=${apiUrl}`)
+    fetch(`/fetch`, {
+      method: "POST",
+      body: JSON.stringify({ url: apiUrl }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((parsed) => parsed.json())
       .then((parsedData) => {
         props.setProgress(70);
@@ -74,10 +80,15 @@ const Page = (props) => {
   const fetchMoreData = async (page) => {
     try {
       props.setProgress(30);
-      const nextUrl = (await props.url) + "&page=" + page;
-      console.log(nextUrl);
+      const nextUrl = props.url + "&page=" + page + "&api_key=";
       props.setProgress(50);
-      const json = await fetch(`/fetch?url=${nextUrl}`);
+      const json = await fetch(`/fetch`, {
+        method: "POST",
+        body: JSON.stringify({ url: nextUrl }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       props.setProgress(70);
       const updatedData = await json.json();
       if (updatedData.total_results >= 0) {
@@ -151,33 +162,33 @@ const Page = (props) => {
   return (
     <div className="text-center" id="main">
       <section id="cont">
-        <h1 className="text-center mt-2 d-inline-block" id="gotop">
+        <h1 className="text-center my-4 d-inline-block" id="gotop">
           {props.type === "search" ? "" : ""}
           {location.pathname.slice(1, 3) === "mo"
             ? capital(location.pathname.slice(7, 20)) + " | "
             : location.pathname.slice(1, 3) === "tv"
-            ? capital(location.pathname.slice(4, 20)) + " | "
-            : ""}
+              ? capital(location.pathname.slice(4, 20)) + " | "
+              : ""}
           {location.pathname.slice(1, 3) === "mo"
             ? "Movies"
             : location.pathname.slice(1, 3) === "tv"
-            ? "TV Series"
-            : "Search"}
+              ? "TV Series"
+              : "Search"}
         </h1>
         <div
           className="row justify-content-center"
           style={{ padding: "0", margin: "0", minHeight: "100vh" }}
         >
           {loading && <Spinner />}
-          <div className="row container" style={{ padding: "0" }}>
+          <div className="row container row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1" style={{ padding: "0" }}>
             {results &&
-              results.map((e) => {
+              results.map((e, index) => {
                 return (
                   e && (
                     <div
-                      className="col-md-3"
+                      className="col"
                       data-bs-theme={props.mode}
-                      key={e.id}
+                      key={index}
                     >
                       <Card
                         genre={fetchGenre(e.genre_ids)}
